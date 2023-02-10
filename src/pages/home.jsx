@@ -1,18 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts/Auth';
+import React, { useEffect, useState } from 'react';
 import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
 import { FormControl } from '@mui/material';
 import api from '../services/api';
 import Paper from '@mui/material/Paper';
-
-import { Link, useNavigate } from "react-router-dom"
-
+import { useNavigate } from "react-router-dom"
 import {
   ContactContainer,
   ContactsContainer,
   ContactText,
-  Icon,
   IconDiv,
   IconsDiv,
   TitleBox,
@@ -23,20 +19,15 @@ const Home = () => {
   const [telefone, setTelefone] = useState('');
   const [isContactFormVisible, setIsContactFormVisible] = useState(false);
   const [isEditFormVisible, setIsEditFormVisible] = useState(false);
-
   const [isButtonVisible, setIsButtonVisible] = useState(true);
   const [contacts, setContacts] = useState([]);
-  //const { token } = useContext(AuthContext);
   const history = useNavigate();
-
   const token = localStorage.getItem("token");
   const admin = localStorage.getItem("isAdmin");
-
   const [nomeUpdate, setNomeUpdate] = useState('');
   const [telefoneUpdate, setTelefoneUpdate] = useState('');
   const [idUpdate, setIdUpdate] = useState('')
-
-  //console.log(admin)
+  console.log(admin)
 
 
   useEffect(() => {
@@ -128,10 +119,16 @@ const Home = () => {
   }
 
 
+
   return (
     <>
       <center>
         <Paper elevation={4}>
+          <center>
+            <br></br>
+        
+             <Button href='/admin' variant="contained">Gerenciar Usuários</Button> 
+          </center>
           <br></br>
           <h1 className='title'>Gerenciador de Contatos</h1>
           <br></br>
@@ -211,12 +208,12 @@ const Home = () => {
               </FormControl>
             </Paper>
           )}
-
+          <br></br>
 
           <Paper elevation={4}>
-          <br></br>
-              <h2 className='title'>Lista de Contatos</h2>
-              <br></br>
+            <br></br>
+            <h2 className='title'>Lista de Contatos</h2>
+            <br></br>
             <ContactsContainer>
               {contacts.map((contact) => (
                 <ContactContainer key={contact.id}>
@@ -233,30 +230,26 @@ const Home = () => {
                         setNomeUpdate(contact.nome)
                         setTelefoneUpdate(contact.telefone)
                         setIdUpdate(contact.id)
-
                       }}
                     >
-                      <Icon className='bi bi-pencil-fill'></Icon>
+                      Atualizar
                     </IconDiv>
                     <IconDiv variant="contained"
                       borderRadius='0 0 0.6rem 0'
                       color='#d83c3c'
                       onClick={() => handleDelete(contact.id)}
                     >
-                      <Icon className='bi bi-trash'></Icon>
+                      Deletar
                     </IconDiv>
                   </IconsDiv>
                 </ContactContainer>
               ))}
             </ContactsContainer>
-
-            <Button variant="contained"
-              onClick={handleLogout}
-            >Sair</Button>
-
+            <br></br>
+            <br></br>
+            <Button variant="contained" onClick={handleLogout}>Sair</Button>
           </Paper>
         </Paper>
-
       </center>
 
 

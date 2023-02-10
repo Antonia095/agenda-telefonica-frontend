@@ -33,18 +33,21 @@ const Register = () => {
           <h1 className='title'>Cadastro</h1>
           <FormControl onSubmit={(e) => handleSubmit(e)}>
             <TextField
+            required={true}
               placeholder='Nome'
               type='text'
               name="username"
               onChange={(e) => setUsername(e.target.value)}
             /><br></br>
             <TextField
+              required={true}
               placeholder='Email'
               type='email'
               name="email"
               onChange={(e) => setEmail(e.target.value)}
             /><br></br>
             <TextField
+            required={true}
               placeholder='Senha'
               type='password'
               name="password"

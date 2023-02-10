@@ -10,7 +10,7 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+  const [error, setError] = useState('');
   const history = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,6 +20,7 @@ const Login = () => {
       await api
         .post('/users/login', { email, password })
         .then((res) => {
+          
           const { token, isAdmin } = res.data;
           localStorage.setItem('isAdmin', isAdmin);
           localStorage.setItem("token", token);
@@ -40,13 +41,14 @@ const Login = () => {
             <TextField
               placeholder='Email'
               type='email'
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(event) => [setEmail(event.target.value), setError("")]}
             /><br></br>
             <TextField
               placeholder='Senha'
               type='password'
               onChange={(event) => setPassword(event.target.value)}
             /><br></br>
+            <label>{error}</label>
             <Button variant="contained" onClick={handleSubmit}>Entrar</Button>
             <p className='text'>
               Não possui conta ainda?

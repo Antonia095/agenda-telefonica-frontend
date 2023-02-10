@@ -4,8 +4,7 @@ import { TextField } from '@mui/material';
 import { Button } from '@mui/material';
 import { FormControl } from '@mui/material';
 import Paper from '@mui/material/Paper';
-
-
+import { useNavigate } from "react-router-dom"
 import {
   UserContainer,
   UsersContainer,
@@ -20,20 +19,16 @@ const Admin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [users, setUsers] = useState([]);
-
+  const history = useNavigate();
   const [isEditFormVisible, setIsEditFormVisible] = useState(false);
   const [isUserFormVisible, setIsUserFormVisible] = useState(false)
   const [isButtonVisible, setIsButtonVisible] = useState(true);
-
-
-  //const [admiUpdate, setadmiUpdate] = useState('');
-  //const [telefoneUpdate, setTelefoneUpdate] = useState('');
   const [idUpdate, setIdUpdate] = useState('')
   const [usernameUpdate, setUserNameUpdate] = useState('');
   const [emailUpdate, setEmailUpdate] = useState('');
-  const [passwordUpdate, setPasswordUpdate] = useState('');
-
+  //const [passwordUpdate, setPasswordUpdate] = useState('');
   const token = localStorage.getItem("token");
+  const isAdmin = localStorage.getItem("isAdmin");
 
   useEffect(() => {
     updateUsersDataList();
@@ -43,6 +38,7 @@ const Admin = () => {
     const responseData = await api.get('/users', {
       headers: {
         token: token,
+        isAdmin: isAdmin
       }
     }).then((res) => res.data);
     setUsers(responseData);
@@ -51,9 +47,15 @@ const Admin = () => {
 
   async function saveUser(e) {
     e.preventDefault();
-    
+
     await api
-      .post('/users/register', { username, email, password })
+      .post('/users/admin/register', { username, email, password},
+      {
+        headers: {
+          token: token,
+          isAdmin: isAdmin
+        },
+      })
       .then((res) => {
         console.log(res.data);
       })
@@ -72,16 +74,16 @@ const Admin = () => {
       id: idUpdate,
       username: usernameUpdate,
       email: emailUpdate,
-      password: passwordUpdate
+      /* password: passwordUpdate */
     }
     console.log(data)
     try {
       await api
-        .put(
+        .patch(
           `/users/${data.id}`, data,
           {
             headers: {
-              token: token,
+              token: token
             },
           }
         )
@@ -101,7 +103,8 @@ const Admin = () => {
       await api
         .delete(`/users/${id}`, {
           headers: {
-            token: token,
+            isAdmin: isAdmin,
+              token: token
           },
 
         })
@@ -119,8 +122,18 @@ const Admin = () => {
 
   }
 
+  function handleLogout() {
+    localStorage.clear();
+    history("/")
+
+  }
+
   return (
+    
     <Paper elevation={4}>
+      <center>    
+            <Button href='/home' variant="contained" >Gerenciar Contatos</Button> 
+        </center>
       <center>
         <div className='App'>
           <br></br>
@@ -146,18 +159,21 @@ const Admin = () => {
               <br></br>
               <FormControl onSubmit={(e) => saveUser(e)} style={{ width: '25vw' }}>
                 <TextField
+                required={true}
                   placeholder='Nome'
                   type='text'
                   name="username"
                   onChange={(e) => setUserName(e.target.value)}
                 /><br></br>
                 <TextField
+                required={true}
                   placeholder='Email'
                   type='email'
                   name="email"
                   onChange={(e) => setEmail(e.target.value)}
                 /><br></br>
                 <TextField
+                required={true}
                   placeholder='Senha'
                   type='password'
                   name="password"
@@ -183,7 +199,7 @@ const Admin = () => {
           )}
 
           {isEditFormVisible && (
-            <Paper elevation={4}>
+            <Paper elevation={14}>
               <br></br>
               <h2 className='title'>Atualizar Usuário</h2>
               <br></br>
@@ -200,12 +216,12 @@ const Admin = () => {
                   name="email"
                   onChange={(e) => setEmailUpdate(e.target.value)}
                 /><br></br>
-                <TextField
+               {/*  <TextField
                   placeholder={passwordUpdate}
                   type='password'
                   name="password"
                   onChange={(e) => setPasswordUpdate(e.target.value)}
-                /><br></br>
+                /> */}<br></br>
                 <div>
                   <Button variant="contained"
                     onClick={() => {
@@ -220,7 +236,7 @@ const Admin = () => {
               </FormControl>
             </Paper>
           )}
-
+          <br></br>
           <Paper elevation={4}>
             <br></br>
             <h2 className='title'>Lista de Usuários cadastrados</h2>
@@ -252,15 +268,19 @@ const Admin = () => {
                       borderRadius='0 0 0.6rem 0'
                       color='#d83c3c'
                       onClick={() => handleDelete(user.id)}>
-                     Deletar
+                      Deletar
                     </IconDiv>
                   </IconsDiv>
                   <br></br>
                 </UserContainer>
-              ))}         
+              ))}
             </UsersContainer>
           </Paper>
         </div>
+        <br></br>
+        <br></br>
+        <Button variant="contained" onClick={handleLogout}>Sair</Button>
+        
       </center>
     </Paper>
 
